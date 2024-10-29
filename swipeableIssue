@@ -1,0 +1,163 @@
+import { StyleSheet, View, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { Checkbox, Text, IconButton } from 'react-native-paper';
+import PropTypes from 'prop-types';
+import SwipeableItem from 'react-native-swipeable-item';
+
+const ShoppingListItem = ({
+  onDelete,
+  isEditable = false,
+  isChecked,
+  isDragging,
+  onCheckToggle,
+  label,
+  onDrag,
+  onLabelChange,
+  id,
+}) => {
+  const [isEdit, setIsEdit] = useState(isEditable);
+  const [title, setTitle] = useState(label);
+
+  const underLay = (position) => {
+    console.log('direction test 1', position);
+    return (
+      <View
+        style={[
+          styles.row,
+          { ...styles.underLay, justifyContent: `flex-${position}` },
+        ]}
+      >
+        <Text style={styles.text}>Delete</Text>
+      </View>
+    );
+  };
+
+  const onSwipeDelete = (param) => {
+    console.log(param);
+    if (param.openDirection === 'left' || param.openDirection === 'right') {
+      onDelete();
+    }
+  };
+
+  return (
+    <SwipeableItem
+      renderUnderlayLeft={() => underLay('end')}
+      renderUnderlayRight={() => underLay('start')}
+      snapPointsLeft={[250]}
+      snapPointsRight={[250]}
+      activationThreshold={0}
+      onChange={onSwipeDelete}
+    >
+      <View style={{ ...styles.cardContent, opacity: isDragging ? 0.5 : 1 }}>
+        <IconButton icon="drag" onPressIn={onDrag} style={styles.dragIcon} />
+        <Checkbox.Android
+          status={isChecked ? 'checked' : 'unchecked'}
+          onPress={onCheckToggle}
+          style={styles.checkBox}
+        />
+        {isEdit ? (
+          <TextInput
+            style={styles.textInput}
+            value={title}
+            multiline
+            onChangeText={(newTitle) => {
+              setTitle(newTitle);
+            }}
+            onBlur={() => {
+              onLabelChange(id, title);
+              setIsEdit(false);
+            }}
+            autoFocus
+          />
+        ) : (
+          <Text
+            onPress={() => setIsEdit(true)}
+            style={isChecked ? styles.strikeThrough : styles.normalText}
+          >
+            {label}
+          </Text>
+        )}
+      </View>
+    </SwipeableItem>
+  );
+};
+
+const styles = StyleSheet.create({
+  strikeThrough: {
+    textDecorationLine: 'line-through',
+    fontSize: 15,
+    textAlignVertical: 'center',
+    textAlign: 'left',
+    flex: 1,
+    maxWidth: '100%',
+  },
+  normalText: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlignVertical: 'center',
+    maxWidth: '100%',
+  },
+  textInput: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    textAlignVertical: 'center',
+    textAlign: 'left',
+    flex: 1,
+    maxWidth: '100%',
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    padding: 20,
+    borderRadius: 12,
+    margin: 4,
+    backgroundColor: '#ADD8E6',
+    borderWidth: 3,
+    borderColor: '#E0E0E0',
+    shadowColor: '#000',
+  },
+  dragIcon: {
+    color: 'black',
+    margin: 0,
+  },
+  row: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+  },
+  text: {
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: 15,
+  },
+  underLay: {
+    flex: 1,
+    backgroundColor: 'tomato',
+    //justifyContent: 'flex-start',
+    paddingVertical: 4,
+    padding: 20,
+    borderRadius: 12,
+    margin: 4,
+    borderWidth: 3,
+    borderColor: '#E0E0E0',
+    shadowColor: '#000',
+  },
+});
+
+ShoppingListItem.propTypes = {
+  onDelete: PropTypes.func,
+  isEditable: PropTypes.bool,
+  isChecked: PropTypes.bool,
+  isDragging: PropTypes.bool,
+  onCheckToggle: PropTypes.func,
+  label: PropTypes.string,
+  onDrag: PropTypes.func,
+  onLabelChange: PropTypes.func,
+  id: PropTypes.string,
+};
+
+export default ShoppingListItem;

@@ -364,8 +364,14 @@ fieldset {
 		                        var addressString = jsonRespond.addIdentification + ", " + jsonRespond.addLocation + ", " + jsonRespond.addStreet + ", " + jsonRespond.addCity + " ," + jsonRespond.addCountry ;
 		                        $('#text_ind_client_name').val(jsonRespond.clientName);
 		                        $('#text_ind_client_nic').val(jsonRespond.nicNumber);
+		                        //By Chathura on 16.10.2025
 		                        $('#text_ind_client_adrs').val(addressString);
-		                        $('#text_ind_client_type').val(jsonRespond.clientType);
+		                        var clientTypeLabel = (jsonRespond.clientType === "C") ? "Corporate" :
+		                            				  (jsonRespond.clientType === "I") ? "Individual" :
+		                                               jsonRespond.clientType; 
+
+		      					$('#text_ind_client_type').val(clientTypeLabel);
+		      					//
 		                    } else {
 		                        showMessageBox('WARNING !', 'Failed to retrieve client details');
 		                    }
@@ -395,8 +401,7 @@ fieldset {
 
 		function getAMLScreeningData(){
 		    const clientName = getQueryParam('clientName');
-			//By chathura sankalpa on 15.10.2025
-			const clientType = getQueryParam('clientType');
+		    const clientType = getQueryParam('clientType');
 		    
 		    $('#tb-matchdetails').append('<tr><td colspan="5">Loading AML results...</td></tr>');
 
@@ -405,8 +410,8 @@ fieldset {
 		        type: 'POST',
 		        data: {
 		            requestAction: 'getAMLScreeningResults',
-		            clientName: clientName, 
-					//By chathura sankalpa on 15.10.2025
+		            clientName: clientName,
+		            //By chathura sankalpa on 15.10.2025
 		            clientType: clientType
 		            //
 		        },

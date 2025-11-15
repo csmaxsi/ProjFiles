@@ -300,7 +300,7 @@
 			$('#view_model').modal('show');
 			iframeClientDet.src = 'clientRiskRatingAuditLog.jsp?clientCode='
 					+ clientCode + '&entUser=' + entUser + '&clientName='
-					+ clientName +
+					+ clientName+
 					//By Chathura Sankalpa on 15.10.2025
  					'&clientType=' + clientType;
 		}
